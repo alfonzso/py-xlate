@@ -165,15 +165,15 @@ if __name__ == '__main__':
     args = p.parse_args()
 
     if args.list:
-        print 'Input formats:'
+        print ('Input formats:')
         for format in INPUT_FORMATS:
-            print '\t'+'/'.join(format[0])
-        print ''
+            print ('\t'+'/'.join(format[0]))
+        print ('')
 
-        print 'Output formats:'
+        print ('Output formats:')
         for format in OUTPUT_FORMATS:
-                print '\t'+'/'.join(format[0])
-        print ''
+                print ('\t'+'/'.join(format[0]))
+        print ()
 
     else:
         OPT_NO_INPUT_SPACE = args.ispace
@@ -206,17 +206,17 @@ if __name__ == '__main__':
             sys.stdout.write( recData)
             sys.stdout.flush()
 
-        except FormatException, e:
+        except FormatException as e:
             sys.stderr.write('[X] Error encountered while searching format: %s' % str(e))
             sys.stderr.flush()
             sys.exit(1)
 
-        except DecodeException, e:
+        except DecodeException as e:
             sys.stderr.write('[X] Error encountered during decoding : %s' % str(e))
             sys.stderr.flush()
             sys.exit(1)
 
-        except EncodeException, e:
+        except EncodeException as e:
             sys.stderr.write('[X] Error encountered during decoding : %s' % str(e))
             sys.stderr.flush()
             sys.exit(1)

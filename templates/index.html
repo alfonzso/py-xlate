@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<!-- saved from url=(0038)https://www.paulschou.com/tools/xlate/ -->
+<html>
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>TRANSLATOR, BINARY</title>
+  <meta name="author" content="Paul Schou">
+  <meta name="description"
+    content="Online tool to translate ASCII/ANSI, HEX, Binary, Base64, etc... Encoder/Decoder with MD4, MD5, SHA1+2, RIPEMD, CRC, etc. hashing algorithms.">
+  <meta name="keywords"
+    content="binary encoder, binary decoder, binary translator, binary tools, binary converter, hexadecimal encoder/decoder, base 64, MD5, Message-Digest algorithm, CRC, Cyclic Redundancy Check, SHA, Secure Hash Algorithm, RIPEMD, RACE Integrity Primitives Evaluation Message Digest">
+  <link rel="shortcut icon" href="{{ url_for('static', filename='icon.png') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
+
+  <script type="text/javascript">
+    var elm = false;
+    function highlight(id) {
+      if (elm) {
+        elm.style.backgroundColor = elm.origColor;
+        elm.hilite = false;
+      }
+      elm = document.getElementById(id);
+      if (!elm.hilite) {
+        elm.origColor = elm.style.backgroundColor;
+        elm.style.backgroundColor = '#cccccc';
+        elm.hilite = true;
+        document.getElementById(id + "_input").focus();
+        //alert('hello ' . );
+      } else {
+        elm.style.backgroundColor = elm.origColor;
+        elm.hilite = false;
+      }
+    }
+  </script>
+</head>
+
+<body>
+  <div class="container">
+    <header>
+      <div class="left">
+        <img src="{{ url_for('static', filename='icon.png') }}" alt="xlate" border="0" width="75">
+      </div>
+      <div class="title">
+        <h1>Translator, Binary</h1>
+        <h5>This application encodes and decodes <a href="https://www.paulschou.com/tools/xlate/">ASCII</a> and <a
+            href="https://www.paulschou.com/tools/xlate/">ANSI</a> text. </h5>
+        <h6>Only codepoints &lt; 128 are ASCII. This is provided for educational and entertainment use only.</h6>
+        <!--					<h5>*** <font color="blue">Thank you for staying tuned, we are end-to-end <u>encrypted</u> for your protection!</font> ***</h5>-->
+      </div>
+    </header>
+    <section>
+      <ul class="box-grid row">
+
+        {# <li class="box full" id="text" onclick="highlight(&#39;text&#39;)">
+          <form method="POST" action="/text">[ <a href="https://www.paulschou.com/tools/ascii/">TEXT</a> ]<br>
+            <textarea cols="80" rows="10" wrap="virtual" name="ascii" id="text_input" class="box-text"></textarea>
+            <br>
+            <input type="submit" class="btn" value="&lt; ENCODE &gt;">
+          </form>
+        </li> #}
+
+        {#
+        <div class="flash0">{{ decoders.get(box) }}</div>
+        #}
+        {% for box in boxes %}
+        <li class="{{box.li.cls}}" {% for key, val in box.li.__dict__.items() %} {{ key }}="{{ val }}" {% endfor %} >
+          <form class="{{box.form.cls}}" {% for key, val in box.form.__dict__.items() %} {{ key }}="{{ val }}" {% endfor %} >
+            [<a href="{{box.href.url}}">{{box.href.content}}</a>]
+            <br>
+            {# <textarea class="{{box.textarea.cls}}" {% for key, val in box.textarea.__dict__.items() %} {{ key }}="{{ val }}" {% endfor %} > #}
+            <textarea {{ box.textarea.get_html_attrs() }}   >
+            </textarea>
+            <br>
+            {% if box.input.cls %}
+            <input class="{{box.input.cls}}" {% for key, val in box.input.__dict__.items() %} {{ key }}="{{ val }}" {% endfor %} >
+            {% endif %}
+          </form>
+        </li>
+        {# <li class={{ box }} id="text" onclick="highlight(&#39;text&#39;)">
+          <form method="POST" action="/text">[ <a href="https://www.paulschou.com/tools/ascii/">TEXT</a> ]<br>
+            <textarea cols="80" rows="10" wrap="virtual" name="ascii" id="text_input" class="box-text"></textarea>
+            <br>
+            <input type="submit" class="btn" value="&lt; ENCODE &gt;">
+          </form>
+        </li> #}
+        {% endfor %}
+
+        {# <li class="box" id="bin" onclick="highlight(&#39;bin&#39;)">
+          <form method="POST">[ <a href="https://en.wikipedia.org/wiki/Binary_numeral_system"><acronym
+                title="Binary">BINARY</acronym></a> ]<br>
+            <textarea cols="35" rows="10" wrap="virtual" name="bin" id="bin_input" class="box-text"></textarea>
+            <br><input type="submit" class="btn" value="&lt; DECODE &gt;">
+          </form>
+        </li>
+        <li class="box" id="oct" onclick="highlight(&#39;oct&#39;)">
+          <form method="POST">[ <a href="https://en.wikipedia.org/wiki/Octal"><acronym title="Octal">OCT</acronym></a>
+            ]<br>
+            <textarea cols="35" rows="10" wrap="virtual" name="oct" id="oct_input" class="box-text"></textarea>
+            <br><input type="submit" class="btn" value="&lt; DECODE &gt;">
+          </form>
+        </li>
+        <li class="box" id="hex" onclick="highlight(&#39;hex&#39;)">
+          <form method="POST">[ <a href="https://en.wikipedia.org/wiki/Hexidecimal"><acronym
+                title="Hexidecimal">HEX</acronym></a> ]<br>
+            <textarea cols="35" rows="10" wrap="virtual" name="hex" id="hex_input" class="box-text"></textarea>
+            <br><input type="submit" class="btn" value="&lt; DECODE &gt;">
+          </form>
+        </li>
+        <li class="box" id="b32" onclick="highlight(&#39;b32&#39;)">
+          <form method="POST">[ <a href="https://en.wikipedia.org/wiki/Base32">BASE32</a> ]<br>
+            <textarea cols="35" rows="10" wrap="virtual" name="b32" id="b32_input" class="box-text"></textarea>
+            <br><input type="submit" class="btn" value="&lt; DECODE &gt;">
+          </form>
+        </li>
+        <li class="box" id="b64" onclick="highlight(&#39;b64&#39;)">
+          <form method="POST">[ <a href="https://en.wikipedia.org/wiki/Base64">BASE64</a> ]<br>
+            <textarea cols="35" rows="10" wrap="virtual" name="b64" id="b64_input" class="box-text"></textarea>
+            <br><input type="submit" class="btn" value="&lt; DECODE &gt;">
+          </form>
+        </li>
+        <li class="box" id="a85" onclick="highlight(&#39;a85&#39;)">
+          <form method="POST">[ <a href="https://en.wikipedia.org/wiki/Ascii85">ASCII85</a> ]<br>
+            <textarea cols="35" rows="10" wrap="virtual" name="a85" id="a85_input" class="box-text"></textarea>
+            <br><input type="submit" class="btn" value="&lt; DECODE &gt;">
+          </form>
+        </li>
+        <li class="box double" id="char" onclick="highlight(&#39;char&#39;)">
+          <form method="POST">[ <a href="https://en.wikipedia.org/wiki/ASCII">CHAR / DEC</a> ]<br>
+            <textarea cols="35" rows="10" wrap="virtual" name="char" id="char_input" class="box-text"></textarea>
+            <br><input type="submit" class="btn" value="&lt; DECODE &gt;">
+          </form>
+        </li>
+        <li class="box double" id="hash" onclick="highlight(&#39;hash&#39;)">
+          <form method="POST">TEXT INFO<br>
+            <textarea cols="35" rows="10" wrap="off" name="hash" id="hash_input" readonly="true"
+              class="box-text"></textarea>
+            <br>Decoding not possible
+          </form>
+        </li> #}
+      </ul>
+    </section>
+  </div>
+  <footer><span id="provtext">Layout provided by Taylor Benner</span></footer>
+
+
+</body>
+
+</html>

@@ -1,0 +1,93 @@
+/* Eric Meyer's Reset CSS v2.0 - http://cssreset.com */
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td,article,aside,canvas,details,embed,figure,figcaption,footer,header,hgroup,menu,nav,output,ruby,section,summary,time,mark,audio,video{border:0;font-size:100%;font:inherit;vertical-align:baseline;margin:0;padding:0}article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section{display:block}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:none}table{border-collapse:collapse;border-spacing:0}
+
+
+/* -- Main Elements -- */
+html 			{  }
+body 		{ scrollbar-3dlight-color:#999999; scrollbar-arrow-color:#999999; scrollbar-base-color:#DDDDDD; scrollbar-darkshadow-color:#999999; scrollbar-face-color:#DDDDDD; scrollbar-highlight-color:#DDDDDD; scrollbar-shadow-color:#DDDDDD; scrollbar-track-color:#CCCCCC; }
+header		{ padding-bottom: 10px; width: 100%; height: auto; display: block; padding-top: 15px; text-align:center; background-color: #ebebeb; border-bottom: 1px solid #cecece; box-shadow: 0px 3px 5px -2px #cecece; }
+nav 			{  }
+section 		{ width: 100%; height: auto; position: relative; top: 10px; display: block; }
+footer 		{ width: 100%; height: 50px; background: #ebebeb; line-height: 50px; }
+
+
+/* -- Main Classes -- */
+.container 	{ width: 100%; height: 100%; margin: 0 auto; position: relative; }
+.title 		{ height: auto; }
+
+.left		{ float:left; border: 0px solid #888888; padding: 2px; font-size: 10px; text-align: center; font-family: 'Open Sans', sans-serif; font-weight: 400; }
+.right		{ float:right; border: 1px solid #888888; padding: 2px; font-size: 10px; text-align: center; font-family: 'Open Sans', sans-serif; font-weight: 400; }
+.curved		{ width: 390px; height: 55px; border:2px solid #ffffff; border-radius:25px; padding: 4px; font-size: 14px; text-align: center; background-color: #ffffff; overflow: hidden;}
+.curved:hover	{ border: 2px solid; }
+
+
+/* -- Typography -- */
+@import url(http://fonts.googleapis.com/css?family=Open+Sans:400,600,800&subset=latin-ext);
+h1, h2, h3, h4, h5, h6, span, p, a { font-family: 'Open Sans', sans-serif; font-weight: 400; }
+h1 			{ font-size: 26px; text-transform: uppercase; letter-spacing: 2px; }
+h2 			{ font-size: 22px; }
+h3 			{ font-size: 18px; }
+h4 			{ font-size: 16px; }
+h5 			{ font-size: 14px; letter-spacing: 1px; }
+	header h5 { padding-top: 15px; }
+h6 			{ font-size: 11px; letter-spacing: 1px; }
+	header h6 { padding-top: 5px; }
+
+span		{  }
+p			{  }
+
+a 			{ color: #000000; }
+a:hover 		{  }
+a:visited 	{  }
+
+.strong 		{ font-weight: 600 }
+.em 			{  }
+
+
+/* -- Input and Forms -- */
+form 		{ padding-left: 1em; padding-right: 1em; width: auto;}
+
+
+/*-- Lists --*/
+.box-grid	{ margin: 0px; padding: 0px; box-shadow: 0px 3px 5px -1px #b1b1b1;  }
+.row		{ clear: both; }
+
+.box 		{ overflow: visible; vertical-align: top; margin-left: -4px; padding: 0px; width: 25%; height: 200px; display: inline-block; border: 1px solid #cecece; background-color: #dddddd; text-align: center; color: black;}
+/*  .box:hover{ background-color: #bfbfbf;} */
+.half		{ width: 50%; }
+.full		{ width: 100%; }
+
+
+.box, .box-grid { 
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
+
+.box-text { width: 95%; height: 140px; background-color: #ffffff; }
+
+/* -- Media Queries -- */
+@media only screen and (min-width: 1000px) {
+    .box { width: 25%; }
+	.full { width: 100%; }
+	.half { width: 50%; }
+}
+@media only screen and (min-width: 768px) and (max-width: 999px) {
+    .box { width: 33.3%; }
+	.full { width: 100%; }
+	.half { width: 50%; }
+	.double { width: 50%; }
+}
+@media only screen and (max-width: 767px) {
+    .box { width: 50%; }
+	.full { width: 100%; }
+	.half { width: 100%; }
+}
+@media only screen and (max-width: 480px) {
+    .box { width: 100%; }
+    .left,.right { display: none; }
+}
+
+
+/* Custom Overrides */
+#provtext { padding: 10px; font-size: 8px; }
