@@ -43,42 +43,23 @@ def hello_world():
 @app.route('/text', methods=['POST'])
 def its_a_text():
     text = request.form.get('ascii')
-    # print(
-    #     "---------->",
-    #     # int(int(text, 16), 8),
-    #     hexencode(text),
-    #     text.encode("utf-8").hex(),
-    #     oct(int(text.encode("utf-8").hex(), 16)),
-    #     oct_encode(text)
-    # )
-    # hashes = []
-    # algos = sorted(hashlib.algorithms_available)
-    # for algo in algos:
-    #     h = hashlib.new(algo)
-    #     h.update(bytes(text, encoding='utf8'))
-    #     if algo == 'shake_128':
-    #         hashes.append(f"{algo}: {h.hexdigest(64)}")
-    #     elif algo == 'shake_256':
-    #         hashes.append(f"{algo}: {h.hexdigest(128)}")
-    #     else:
-    #         hashes.append(f"{algo}: {h.hexdigest()}")
-    # print(
-    #     hashes[-1]
-    # )
-    # print(algos)
-    messages = json.dumps(
-        {
-            "text": text,
-            "bin": binencode(text),
-            "oct": oct_encode(text),
-            "hex": hexencode(text),
-            "b32": base64.b32encode(bytes(text, encoding='utf8')).decode("utf-8"),
-            "b64": base64.b64encode(bytes(text, encoding='utf8')).decode("utf-8"),
-            "a85": base64.a85encode(bytes(text, encoding='utf8')).decode("utf-8"),
-            "char": decencode(text),
-            # "hash": "fafa09",
-            "hash": "\n".join(text_to_all_hash_method(text)),
-        }
-    )
+    messages = json.dumps(ascii_to_xlate(text)
+                          # {
+                          #     "text": text,
+                          #     "bin": binencode(text),
+                          #     "oct": oct_encode(text),
+                          #     "hex": hexencode(text),
+                          #     "b32": base64.b32encode(bytes(text, encoding='utf8')).decode("utf-8"),
+                          #     "b64": base64.b64encode(bytes(text, encoding='utf8')).decode("utf-8"),
+                          #     "a85": base64.a85encode(bytes(text, encoding='utf8')).decode("utf-8"),
+                          #     "char": decencode(text),
+                          #     "hash": "\n".join(text_to_all_hash_method(text)),
+                          # }
+                          )
     session['messages'] = messages
     return redirect(request.referrer)
+
+
+@app.route('/bin', methods=['POST'])
+def bin():
+    pass

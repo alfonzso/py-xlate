@@ -119,7 +119,23 @@ def revhex(s):
     return j.join(['0x' + s[i:i + 4][::-1].encode('hex') for i in range(0, len(s), 4)])
 
 
-def text_to_all_hash_method(s):
+def ascii_to_xlate(s):
+    return {
+        "text": s,
+        "bin": binencode(s),
+        "oct": oct_encode(s),
+        "hex": hexencode(s),
+        "b32": base64.b32encode(bytes(s, encoding='utf8')).decode("utf-8"),
+        "b64": base64.b64encode(bytes(s, encoding='utf8')).decode("utf-8"),
+        "a85": base64.a85encode(bytes(s, encoding='utf8')).decode("utf-8"),
+        "char": decencode(s),
+        "hash": "\n".join(ascii_to_all_hash_method(s)),
+    }
+
+# ONE WAY FUNCS
+
+
+def ascii_to_all_hash_method(s):
     hashes = []
     algos = sorted(hashlib.algorithms_available)
     for algo in algos:
@@ -132,8 +148,6 @@ def text_to_all_hash_method(s):
         else:
             hashes.append(f"{algo}: {h.hexdigest()}")
     return hashes
-
-# ONE WAY FUNCS
 
 
 def md5(s):
