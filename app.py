@@ -13,8 +13,17 @@ class SaveAllKwargs(object):
 
     def get_html_attrs(self):
         # _attrs = ""
-        _attrs = " ".join([f"{key}={val} " for key, val in self.__dict__.items()])
-        return f""" class={self.cls} {_attrs}"""
+        # _attrs = " ".join([f"{key}='{val}'  " for key, val in self.__dict__.items()])
+        _cls = {}
+        for key, val in self.__dict__.items():
+            _cls.update({key: val})
+        # _cls = f"class={self.cls}" if self.cls else ""
+        # _cls = f"class='{self.cls}'" if hasattr(self, 'cls') else ""
+        _cls.update({"class": f"{self.cls}"} if hasattr(self, 'cls') else {"": ""})
+        # print(
+        # f"{_cls} {_attrs}"
+        # )
+        return _cls
 
 
 class Boxes(SaveAllKwargs):

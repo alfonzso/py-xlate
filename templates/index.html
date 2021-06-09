@@ -1,3 +1,7 @@
+{% macro tst(box_element) -%}
+    {% for key, val in box_element.get_html_attrs().items() %} {{ key }} = "{{ val }}"  {% endfor %}
+{%- endmacro %}
+
 <!DOCTYPE html>
 <!-- saved from url=(0038)https://www.paulschou.com/tools/xlate/ -->
 <html>
@@ -64,16 +68,16 @@
         <div class="flash0">{{ decoders.get(box) }}</div>
         #}
         {% for box in boxes %}
-        <li class="{{box.li.cls}}" {% for key, val in box.li.__dict__.items() %} {{ key }}="{{ val }}" {% endfor %} >
-          <form class="{{box.form.cls}}" {% for key, val in box.form.__dict__.items() %} {{ key }}="{{ val }}" {% endfor %} >
+        {# <li {% for key, val in box.li.get_html_attrs().items() %} {{ key }} = "{{ val }}"  {% endfor %}> #}
+        <li {{ tst(box.li) }}>
+          <form {{ tst(box.form) }} >
             [<a href="{{box.href.url}}">{{box.href.content}}</a>]
             <br>
-            {# <textarea class="{{box.textarea.cls}}" {% for key, val in box.textarea.__dict__.items() %} {{ key }}="{{ val }}" {% endfor %} > #}
-            <textarea {{ box.textarea.get_html_attrs() }}   >
+            <textarea {{ tst(box.textarea) }}>
             </textarea>
             <br>
             {% if box.input.cls %}
-            <input class="{{box.input.cls}}" {% for key, val in box.input.__dict__.items() %} {{ key }}="{{ val }}" {% endfor %} >
+            <input {{ tst(box.input) }} >
             {% endif %}
           </form>
         </li>
