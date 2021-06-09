@@ -1,5 +1,5 @@
 {% macro get_html_attrs(box_element) -%}
-    {% for key, val in box_element.get_html_attrs().items() %} {{ key }} = "{{ val }}"  {% endfor %}
+{% for key, val in box_element.get_html_attrs().items() %} {{ key }} = "{{ val }}" {% endfor %}
 {%- endmacro %}
 
 <!DOCTYPE html>
@@ -36,14 +36,14 @@
 
         {% for box in boxes %}
         <li {{ get_html_attrs(box.li) }}>
-          <form {{ get_html_attrs(box.form) }} >
+          <form {{ get_html_attrs(box.form) }}>
             [<a href="{{box.href.url}}">{{box.href.content}}</a>]
             <br>
-            <textarea {{ get_html_attrs(box.textarea) }}>
-            </textarea>
+            <textarea {{ get_html_attrs(box.textarea)
+              }}>{%- if box.textarea.value -%} {{ box.textarea.value }} {%- endif -%}</textarea>
             <br>
             {% if box.input.cls %}
-            <input {{ get_html_attrs(box.input) }} >
+            <input {{ get_html_attrs(box.input) }}>
             {% endif %}
           </form>
         </li>

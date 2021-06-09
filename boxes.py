@@ -13,6 +13,8 @@ class SaveAllKwargs(object):
 class Boxes(SaveAllKwargs):
     def __init__(self, **kwargs) -> None:
         super().__init__(**kwargs)
+        # print(dir(self))
+        self.id = self.li.id
 
 
 class Li(SaveAllKwargs):
@@ -36,6 +38,8 @@ class Input(SaveAllKwargs):
 
 
 class Textarea(SaveAllKwargs):
+    value = ""
+
     def __init__(self, **kwargs) -> None:
         super().__init__(**kwargs)
 

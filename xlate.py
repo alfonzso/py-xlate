@@ -5,37 +5,62 @@ import hashlib
 import argparse
 import sys
 
+
 class FormatException(RuntimeError):
     pass
+
 
 class DecodeException(RuntimeError):
     pass
 
+
 class EncodeException(RuntimeError):
     pass
 
-#GLOBAL OPTIONS
+
+# GLOBAL OPTIONS
 OPT_NO_INPUT_SPACE = False
 OPT_NO_OUTPUT_SPACE = False
 OPT_NO_INPUT_NAME = '--no-input-spaces'
 OPT_NO_OUTPUT_NAME = '--no-output-spaces'
 
 # DECODE/ENCODE FUNCS
+
+
 def identity(s):
     return s
 
 
 def hexdecode(s):
     if not OPT_NO_INPUT_SPACE:
-        s = s.replace(' ','')
+        s = s.replace(' ', '')
 
     return s.strip().decode('hex')
 
 
-def hexencode(s):
-    ret = s.encode('hex')
+def text_to_hex_no_space(s):
+    global OPT_NO_OUTPUT_SPACE
+    OPT_NO_OUTPUT_SPACE = True
+    ret = int(hexencode(s), 16)
+    OPT_NO_OUTPUT_SPACE = False
+    return ret
+
+
+def oct_encode(s):
+    ret = oct(text_to_hex_no_space(s))
+    ret = ret[2:len(ret)]
+
     if not OPT_NO_OUTPUT_SPACE:
-        ret = ' '.join(ret[i:i+2] for i in range(0, len(ret),2))
+        ret = ' '.join(ret[i:i + 8] for i in range(0, len(ret), 8))
+
+    return ret
+
+
+def hexencode(s):
+    # ret = s.encode('hex')
+    ret = s.encode("utf-8").hex()
+    if not OPT_NO_OUTPUT_SPACE:
+        ret = ' '.join(ret[i:i + 2] for i in range(0, len(ret), 2))
 
     return ret
 
@@ -47,7 +72,7 @@ def ashexdecode(s):
 def ashexencode(s):
     ret = '\\x'.join([hex(ord(e))[2:].zfill(2) for e in s])
 
-    return '' if ret=='' else '\\x'+ret
+    return '' if ret == '' else '\\x' + ret
 
 
 def decdecode(s):
@@ -63,18 +88,18 @@ def decencode(s):
 
 def bindecode(s):
     if not OPT_NO_INPUT_SPACE:
-        s = s.replace(' ','')
+        s = s.replace(' ', '')
 
     s = s.strip()
-    return ''.join([chr(int(s[i:i+8], 2)) for i in range(0, len(s), 8)])
+    return ''.join([chr(int(s[i:i + 8], 2)) for i in range(0, len(s), 8)])
 
 
 def bin7decode(s):
     if not OPT_NO_INPUT_SPACE:
-        s = s.replace(' ','')
+        s = s.replace(' ', '')
 
     s = s.strip()
-    return ''.join([chr(int(s[i:i+7], 2)) for i in range(0, len(s), 7)])
+    return ''.join([chr(int(s[i:i + 7], 2)) for i in range(0, len(s), 7)])
 
 
 def binencode(s):
@@ -84,14 +109,14 @@ def binencode(s):
 
 def revhex64(s):
     j = '' if OPT_NO_OUTPUT_SPACE else ' '
-    sw = s+'\x00'
-    return j.join(['0x'+s[i:i+8][::-1].encode('hex') for i in range(0, len(s), 8)])
+    sw = s + '\x00'
+    return j.join(['0x' + s[i:i + 8][::-1].encode('hex') for i in range(0, len(s), 8)])
 
 
 def revhex(s):
     j = '' if OPT_NO_OUTPUT_SPACE else ' '
-    sw = s+'\x00'
-    return j.join(['0x'+s[i:i+4][::-1].encode('hex') for i in range(0, len(s), 4)])
+    sw = s + '\x00'
+    return j.join(['0x' + s[i:i + 4][::-1].encode('hex') for i in range(0, len(s), 4)])
 
 
 # ONE WAY FUNCS
@@ -127,26 +152,26 @@ DEFAULT_DEC_FUNCTION = identity
 
 # INPUT AND OUTPUT FORMATS
 INPUT_FORMATS = [
-        ([DEFAULT_NAME], DEFAULT_DEC_FUNCTION, DEFAULT_ENC_FUNCTION),
-        (['base64', 'b64'], base64.b64decode, base64.b64encode),
-        (['hex'], hexdecode, hexencode),
-        (['antislash-hex'], ashexdecode, ashexencode),
-        (['dec'], decdecode, decencode),
-        (['bin'], bindecode, binencode),
-        (['bin7'], bin7decode, None),
-        ]
+    ([DEFAULT_NAME], DEFAULT_DEC_FUNCTION, DEFAULT_ENC_FUNCTION),
+    (['base64', 'b64'], base64.b64decode, base64.b64encode),
+    (['hex'], hexdecode, hexencode),
+    (['antislash-hex'], ashexdecode, ashexencode),
+    (['dec'], decdecode, decencode),
+    (['bin'], bindecode, binencode),
+    (['bin7'], bin7decode, None),
+]
 
 
 ONE_WAY_FUNCS = [
-        (['md5'], None, md5),
-        (['sha1'], None, sha1),
-        (['sha224'], None, sha224),
-        (['sha256'], None, sha256),
-        (['sha384'], None, sha384),
-        (['sha512'], None, sha512),
-        (['revhex64'], None, revhex64),
-        (['revhex'], None, revhex),
-        ]
+    (['md5'], None, md5),
+    (['sha1'], None, sha1),
+    (['sha224'], None, sha224),
+    (['sha256'], None, sha256),
+    (['sha384'], None, sha384),
+    (['sha512'], None, sha512),
+    (['revhex64'], None, revhex64),
+    (['revhex'], None, revhex),
+]
 
 OUTPUT_FORMATS = INPUT_FORMATS + ONE_WAY_FUNCS
 
@@ -165,19 +190,19 @@ if __name__ == '__main__':
     args = p.parse_args()
 
     if args.list:
-        print ('Input formats:')
+        print('Input formats:')
         for format in INPUT_FORMATS:
-            print ('\t'+'/'.join(format[0]))
-        print ('')
+            print('\t' + '/'.join(format[0]))
+        print('')
 
-        print ('Output formats:')
+        print('Output formats:')
         for format in OUTPUT_FORMATS:
-                print ('\t'+'/'.join(format[0]))
-        print ()
+            print('\t' + '/'.join(format[0]))
+        print()
 
     else:
         OPT_NO_INPUT_SPACE = args.ispace
-        OPT_NO_OUTPUT_SPACE= args.ospace
+        OPT_NO_OUTPUT_SPACE = args.ospace
 
         try:
             inputFormat = None
@@ -203,7 +228,7 @@ if __name__ == '__main__':
             dcData = inputFormat[1](ecData)
             recData = outputFormat[2](dcData)
 
-            sys.stdout.write( recData)
+            sys.stdout.write(recData)
             sys.stdout.flush()
 
         except FormatException as e:
