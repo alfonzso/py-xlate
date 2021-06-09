@@ -43,23 +43,17 @@ def hello_world():
 @app.route('/text', methods=['POST'])
 def its_a_text():
     text = request.form.get('ascii')
-    messages = json.dumps(ascii_to_xlate(text)
-                          # {
-                          #     "text": text,
-                          #     "bin": binencode(text),
-                          #     "oct": oct_encode(text),
-                          #     "hex": hexencode(text),
-                          #     "b32": base64.b32encode(bytes(text, encoding='utf8')).decode("utf-8"),
-                          #     "b64": base64.b64encode(bytes(text, encoding='utf8')).decode("utf-8"),
-                          #     "a85": base64.a85encode(bytes(text, encoding='utf8')).decode("utf-8"),
-                          #     "char": decencode(text),
-                          #     "hash": "\n".join(text_to_all_hash_method(text)),
-                          # }
-                          )
+    messages = json.dumps(ascii_to_xlate(text))
     session['messages'] = messages
     return redirect(request.referrer)
 
 
 @app.route('/bin', methods=['POST'])
 def bin():
-    pass
+    messages = json.dumps(
+        ascii_to_xlate(
+            bindecode(request.form.get('bin'))
+        )
+    )
+    session['messages'] = messages
+    return redirect(request.referrer)
