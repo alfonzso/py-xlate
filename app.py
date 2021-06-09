@@ -42,12 +42,6 @@ def hello_world():
 
 @app.route('/text', methods=['POST'])
 def its_a_text():
-    form = request.form
-    # k, v = form
-    # print(
-    #     k, v
-    # )
-    # return request.referrer
     text = request.form.get('ascii')
     # print(
     #     "---------->",
@@ -57,25 +51,34 @@ def its_a_text():
     #     oct(int(text.encode("utf-8").hex(), 16)),
     #     oct_encode(text)
     # )
-    # base64.
+    # hashes = []
+    # algos = sorted(hashlib.algorithms_available)
+    # for algo in algos:
+    #     h = hashlib.new(algo)
+    #     h.update(bytes(text, encoding='utf8'))
+    #     if algo == 'shake_128':
+    #         hashes.append(f"{algo}: {h.hexdigest(64)}")
+    #     elif algo == 'shake_256':
+    #         hashes.append(f"{algo}: {h.hexdigest(128)}")
+    #     else:
+    #         hashes.append(f"{algo}: {h.hexdigest()}")
+    # print(
+    #     hashes[-1]
+    # )
+    # print(algos)
     messages = json.dumps(
         {
             "text": text,
             "bin": binencode(text),
-            # "oct": "oct(text)",
             "oct": oct_encode(text),
-            # "oct": str(int(hexencode(text), 8)),
             "hex": hexencode(text),
-            # "b32": "fafa05",
             "b32": base64.b32encode(bytes(text, encoding='utf8')).decode("utf-8"),
             "b64": base64.b64encode(bytes(text, encoding='utf8')).decode("utf-8"),
             "a85": base64.a85encode(bytes(text, encoding='utf8')).decode("utf-8"),
-            # "a85": "fafa07",
             "char": decencode(text),
-            "hash": "fafa09",
+            # "hash": "fafa09",
+            "hash": "\n".join(text_to_all_hash_method(text)),
         }
     )
-    # return redirect(url_for('.hello_world', messages=messages))
-    # print(hexencode("fafa01"))
     session['messages'] = messages
     return redirect(request.referrer)

@@ -119,7 +119,23 @@ def revhex(s):
     return j.join(['0x' + s[i:i + 4][::-1].encode('hex') for i in range(0, len(s), 4)])
 
 
+def text_to_all_hash_method(s):
+    hashes = []
+    algos = sorted(hashlib.algorithms_available)
+    for algo in algos:
+        h = hashlib.new(algo)
+        h.update(bytes(s, encoding='utf8'))
+        if algo == 'shake_128':
+            hashes.append(f"{algo}: {h.hexdigest(64)}")
+        elif algo == 'shake_256':
+            hashes.append(f"{algo}: {h.hexdigest(128)}")
+        else:
+            hashes.append(f"{algo}: {h.hexdigest()}")
+    return hashes
+
 # ONE WAY FUNCS
+
+
 def md5(s):
     return hashlib.md5(s).hexdigest()
 
