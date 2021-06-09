@@ -1,9 +1,8 @@
-{% macro tst(box_element) -%}
+{% macro get_html_attrs(box_element) -%}
     {% for key, val in box_element.get_html_attrs().items() %} {{ key }} = "{{ val }}"  {% endfor %}
 {%- endmacro %}
 
 <!DOCTYPE html>
-<!-- saved from url=(0038)https://www.paulschou.com/tools/xlate/ -->
 <html>
 
 <head>
@@ -36,15 +35,15 @@
       <ul class="box-grid row">
 
         {% for box in boxes %}
-        <li {{ tst(box.li) }}>
-          <form {{ tst(box.form) }} >
+        <li {{ get_html_attrs(box.li) }}>
+          <form {{ get_html_attrs(box.form) }} >
             [<a href="{{box.href.url}}">{{box.href.content}}</a>]
             <br>
-            <textarea {{ tst(box.textarea) }}>
+            <textarea {{ get_html_attrs(box.textarea) }}>
             </textarea>
             <br>
             {% if box.input.cls %}
-            <input {{ tst(box.input) }} >
+            <input {{ get_html_attrs(box.input) }} >
             {% endif %}
           </form>
         </li>
