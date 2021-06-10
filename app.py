@@ -1,39 +1,21 @@
+from xlate import a85_decode, ascii_to_xlate, b32_decode, b64_decode, bindecode, decdecode, hexdecode, octaldecode
 from flask import Flask, render_template, request, redirect, session, url_for
 from boxes import boxes
 import json
-from xlate import *
 
 app = Flask(__name__)
 app.debug = True
 app.secret_key = 'super secret key'
 app.config['SESSION_TYPE'] = 'filesystem'
-# app.jinja_env.trim_blocks = True
-# app.jinja_env.lstrip_blocks = True
-
-# [session.pop(key) for key in list(session.keys())]
 
 
 @app.route('/')
 def hello_world():
-    # session.clear()
-    # return 'Hello, World!'
-
-    print(
-        request.args
-    )
     messages = {}
-    # if 'messages' in request.args:
     if 'messages' in session:
-        # messages = json.loads(request.args['messages']).get("main")
-        # messages = json.loads(request.args['messages'])
         messages = json.loads(session['messages'])
-        print(
-            messages
-        )
 
     for x in boxes:
-        # print(x.id)
-        # x.textarea.value = messages
         x.textarea.value = messages.get(x.id, "")
 
     session.clear()
@@ -58,22 +40,68 @@ def bin():
     session['messages'] = messages
     return redirect(request.referrer)
 
+
 @app.route('/oct', methods=['POST'])
 def oct():
     messages = json.dumps(
         ascii_to_xlate(
-            octal_to_str(request.form.get('oct'))
+            octaldecode(request.form.get('oct'))
         )
     )
     session['messages'] = messages
     return redirect(request.referrer)
 
-# text
-# bin
-# oct
-# hex
-# b32
-# b64
-# a85
-# char
-# hash
+
+@app.route('/hex', methods=['POST'])
+def hex():
+    messages = json.dumps(
+        ascii_to_xlate(
+            hexdecode(request.form.get('hex'))
+        )
+    )
+    session['messages'] = messages
+    return redirect(request.referrer)
+
+
+@app.route('/b32', methods=['POST'])
+def b32():
+    messages = json.dumps(
+        ascii_to_xlate(
+            b32_decode(request.form.get('b32'))
+        )
+    )
+    session['messages'] = messages
+    return redirect(request.referrer)
+
+
+@app.route('/b64', methods=['POST'])
+def b64():
+    messages = json.dumps(
+        ascii_to_xlate(
+            b64_decode(request.form.get('b64'))
+        )
+    )
+    session['messages'] = messages
+    return redirect(request.referrer)
+
+
+@app.route('/a85', methods=['POST'])
+def a85():
+    messages = json.dumps(
+        ascii_to_xlate(
+            a85_decode(request.form.get('a85'))
+        )
+    )
+    session['messages'] = messages
+    return redirect(request.referrer)
+
+
+@app.route('/char', methods=['POST'])
+def char():
+    messages = json.dumps(
+        ascii_to_xlate(
+            decdecode(request.form.get('char'))
+        )
+    )
+    session['messages'] = messages
+    return redirect(request.referrer)

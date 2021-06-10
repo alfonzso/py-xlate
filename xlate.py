@@ -18,6 +18,12 @@ class EncodeException(RuntimeError):
     pass
 
 
+def clean_and_set_spacing(s, space):
+    s = s.replace(" ", "")
+    return ' '.join(s[i:i + space] for i in range(0, len(s), space))
+    # return s
+
+
 # GLOBAL OPTIONS
 OPT_NO_INPUT_SPACE = False
 OPT_NO_OUTPUT_SPACE = False
@@ -35,39 +41,18 @@ def hexdecode(s):
     if not OPT_NO_INPUT_SPACE:
         s = s.replace(' ', '')
 
-    return s.strip().decode('hex')
+    return bytes.fromhex(s).decode('utf-8')
 
 
-def text_to_hex_no_space(s):
-    global OPT_NO_OUTPUT_SPACE
-    OPT_NO_OUTPUT_SPACE = True
-    ret = int(hexencode(s), 16)
-    OPT_NO_OUTPUT_SPACE = False
-    return ret
-
-
-def octal_to_str(octal_str):
+def octaldecode(s):
     '''
     It takes an octal string and return a string
         :octal_str: octal str like "110 145 154"
     '''
-    # octal_str = octal_str.replace(" ", "")
-    # octal_str = ' '.join(octal_str[i:i + 3] for i in range(0, len(octal_str), 3))
-
-    # str_con = ""
     str_converted = ""
-    print(
-        "---------------------------",
-        octal_str)
-    # octal_str = "110 145 154 154 157 040 127 157 162 154 144"
-    for octal_char in octal_str.split(" "):
-        # str_con += str(int(octal_char, 8))
+    s = clean_and_set_spacing(s, 3)
+    for octal_char in s.split(" "):
         str_converted += chr(int(octal_char, 8))
-    # print(
-    #     "---->",
-    #     str_con,
-    #     str_converted
-    # )
     return str_converted
 
 
@@ -104,7 +89,7 @@ def ashexencode(s):
 def decdecode(s):
     if OPT_NO_INPUT_SPACE:
         raise DecodeException('Option %s is not supported with decimal decoding' % OPT_NO_INPUT_NAME)
-
+    s = clean_and_set_spacing(s, 3)
     return ''.join(map(chr, map(int, s.strip().split(' '))))
 
 
@@ -143,6 +128,18 @@ def revhex(s):
     j = '' if OPT_NO_OUTPUT_SPACE else ' '
     sw = s + '\x00'
     return j.join(['0x' + s[i:i + 4][::-1].encode('hex') for i in range(0, len(s), 4)])
+
+
+def b32_decode(s):
+    return base64.b32decode(bytes(s, encoding='utf8')).decode("utf-8")
+
+
+def b64_decode(s):
+    return base64.b64decode(bytes(s, encoding='utf8')).decode("utf-8")
+
+
+def a85_decode(s):
+    return base64.a85decode(bytes(s, encoding='utf8')).decode("utf-8")
 
 
 def ascii_to_xlate(s):
