@@ -1,5 +1,5 @@
 from xlate import a85_decode, ascii_to_xlate, b32_decode, b64_decode, bindecode, decdecode, hexdecode, octaldecode
-from flask import Flask, render_template, request, redirect, session, url_for
+from flask import Flask, render_template, request, redirect, session
 from boxes import boxes
 import json
 
