@@ -46,12 +46,38 @@ def text_to_hex_no_space(s):
     return ret
 
 
+def octal_to_str(octal_str):
+    '''
+    It takes an octal string and return a string
+        :octal_str: octal str like "110 145 154"
+    '''
+    # octal_str = octal_str.replace(" ", "")
+    # octal_str = ' '.join(octal_str[i:i + 3] for i in range(0, len(octal_str), 3))
+
+    # str_con = ""
+    str_converted = ""
+    print(
+        "---------------------------",
+        octal_str)
+    # octal_str = "110 145 154 154 157 040 127 157 162 154 144"
+    for octal_char in octal_str.split(" "):
+        # str_con += str(int(octal_char, 8))
+        str_converted += chr(int(octal_char, 8))
+    # print(
+    #     "---->",
+    #     str_con,
+    #     str_converted
+    # )
+    return str_converted
+
+
 def oct_encode(s):
-    ret = oct(text_to_hex_no_space(s))
-    ret = ret[2:len(ret)]
+    ret = ""
+    for i in s:
+        ret += str(oct(ord(i))[2:]).zfill(3)
 
     if not OPT_NO_OUTPUT_SPACE:
-        ret = ' '.join(ret[i:i + 8] for i in range(0, len(ret), 8))
+        ret = ' '.join(ret[i:i + 3] for i in range(0, len(ret), 3))
 
     return ret
 

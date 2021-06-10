@@ -57,3 +57,23 @@ def bin():
     )
     session['messages'] = messages
     return redirect(request.referrer)
+
+@app.route('/oct', methods=['POST'])
+def oct():
+    messages = json.dumps(
+        ascii_to_xlate(
+            octal_to_str(request.form.get('oct'))
+        )
+    )
+    session['messages'] = messages
+    return redirect(request.referrer)
+
+# text
+# bin
+# oct
+# hex
+# b32
+# b64
+# a85
+# char
+# hash
