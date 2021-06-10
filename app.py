@@ -23,9 +23,10 @@ def hello_world():
 
 
 @app.route('/text', methods=['POST'])
-def its_a_text():
-    text = request.form.get('ascii')
-    messages = json.dumps(ascii_to_xlate(text))
+def ascii():
+    messages = json.dumps(
+        ascii_to_xlate(request.form.get('ascii'))
+    )
     session['messages'] = messages
     return redirect(request.referrer)
 

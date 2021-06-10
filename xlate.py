@@ -49,21 +49,32 @@ def octaldecode(s):
     It takes an octal string and return a string
         :octal_str: octal str like "110 145 154"
     '''
+    print(s)
     str_converted = ""
-    s = clean_and_set_spacing(s, 3)
+    t_list_f = []
+    t_list_ff = []
+    # s = clean_and_set_spacing(s, 3)
     for octal_char in s.split(" "):
-        str_converted += chr(int(octal_char, 8))
-    return str_converted
+        f = int(octal_char, 8)
+        ff = chr(f)
+        t_list_f.append(f)
+        t_list_ff.append(ff)
+        str_converted += ff
+        # print(f, end='')
+        # print(ff, end='')
+    print(t_list_f)
+    print(t_list_ff)
+    # return str_converted
+    ret = ' '.join(map(str, map(ord, [str_converted[i] for i in range(0, len(str_converted))])))
+    return ''.join(map(chr, map(int, ret.strip().split(' '))))
 
 
 def oct_encode(s):
-    ret = ""
+    ret = []
     for i in s:
-        ret += str(oct(ord(i))[2:]).zfill(3)
-
+        ret.append(str(oct(ord(i))[2:]))
     if not OPT_NO_OUTPUT_SPACE:
-        ret = ' '.join(ret[i:i + 3] for i in range(0, len(ret), 3))
-
+        ret = ' '.join(ret)
     return ret
 
 
@@ -89,7 +100,7 @@ def ashexencode(s):
 def decdecode(s):
     if OPT_NO_INPUT_SPACE:
         raise DecodeException('Option %s is not supported with decimal decoding' % OPT_NO_INPUT_NAME)
-    s = clean_and_set_spacing(s, 3)
+    # s = clean_and_set_spacing(s, 3)
     return ''.join(map(chr, map(int, s.strip().split(' '))))
 
 
