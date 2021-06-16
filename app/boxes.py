@@ -217,7 +217,7 @@ boxes = [
         ),
         form=Form(
             method="POST",
-            action="/", _action="/char",
+            action="/",
         ),
         href=Address(
             url="https://en.wikipedia.org/wiki/ASCII",
