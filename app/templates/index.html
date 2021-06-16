@@ -1,5 +1,5 @@
 {% macro get_html_attrs(box_element) -%}
-{% for key, val in box_element.get_html_attrs().items() %} {{ key }} = "{{ val }}" {% endfor %}
+{% for key, val in box_element.get_html_attrs().items() %}{% if val|length %}{{ key }} = "{{ val }}"{% endif %}{% endfor%}
 {%- endmacro %}
 
 <!DOCTYPE html>

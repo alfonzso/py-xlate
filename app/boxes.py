@@ -51,7 +51,7 @@ boxes = [
             id="text"),
         form=Form(
             method="POST",
-            action="/text"),
+            action="/", _action="/text"),
         href=Address(
             url="https://www.paulschou.com/tools/ascii/",
             content="TEXT"),
@@ -73,7 +73,7 @@ boxes = [
         ),
         form=Form(
             method="POST",
-            action="/bin",
+            action="/", _action="/bin",
         ),
         href=Address(
             url="https://en.wikipedia.org/wiki/Binary_numeral_system",
@@ -97,7 +97,7 @@ boxes = [
         ),
         form=Form(
             method="POST",
-            action="/oct",
+            action="/", _action="/oct",
         ),
         href=Address(
             url="https://en.wikipedia.org/wiki/Octal",
@@ -121,7 +121,7 @@ boxes = [
         ),
         form=Form(
             method="POST",
-            action="/hex",
+            action="/", _action="/hex",
         ),
         href=Address(
             url="https://en.wikipedia.org/wiki/Hexidecimal",
@@ -145,7 +145,7 @@ boxes = [
         ),
         form=Form(
             method="POST",
-            action="/b32",
+            action="/", _action="/b32",
         ),
         href=Address(
             url="https://en.wikipedia.org/wiki/Base32",
@@ -169,7 +169,7 @@ boxes = [
         ),
         form=Form(
             method="POST",
-            action="/b64",
+            action="/", _action="/b64",
         ),
         href=Address(
             url="https://en.wikipedia.org/wiki/Base64",
@@ -193,7 +193,7 @@ boxes = [
         ),
         form=Form(
             method="POST",
-            action="/a85",
+            action="/", _action="/a85",
         ),
         href=Address(
             url="https://en.wikipedia.org/wiki/Ascii85",
@@ -217,7 +217,7 @@ boxes = [
         ),
         form=Form(
             method="POST",
-            action="/char",
+            action="/", _action="/char",
         ),
         href=Address(
             url="https://en.wikipedia.org/wiki/ASCII",
