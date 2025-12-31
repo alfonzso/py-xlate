@@ -1,5 +1,6 @@
 import argparse
 import sys
+from typing import Callable, List
 
 from . import (
     DEFAULT_DEC_FUNCTION,
@@ -15,33 +16,90 @@ from . import (
     encdec,
 )
 
-# INPUT AND OUTPUT FORMATS
-INPUT_FORMATS = [
-    ([DEFAULT_NAME], DEFAULT_DEC_FUNCTION, DEFAULT_ENC_FUNCTION),
-    (["base64", "b64"], encdec.b64_decode, encdec.b64_encode),
-    (["hex"], encdec.hex_decode, encdec.hex_encode),
-    (["antislash-hex"], encdec.ashex_decode, encdec.ashex_encode),
-    (["dec"], encdec.dec_decode, encdec.dec_encode),
-    (["bin"], encdec.bin_decode, encdec.bin_encode),
-    (["bin7"], encdec.bin7_decode, None),
-]
+# import types
 
 
-ONE_WAY_FUNCS = [
-    (["md5"], None, encdec.md5),
-    (["sha1"], None, encdec.sha1),
-    (["sha224"], None, encdec.sha224),
-    (["sha256"], None, encdec.sha256),
-    (["sha384"], None, encdec.sha384),
-    (["sha512"], None, encdec.sha512),
-    (["revhex64"], None, encdec.revhex64),
-    (["revhex"], None, encdec.revhex),
-]
+class XLFormats:
+    # name: str
+    # alias: list[str]
+    _name: List[str]
+    _decoder: Callable
+    _encoder: Callable
 
-OUTPUT_FORMATS = INPUT_FORMATS + ONE_WAY_FUNCS
+    def __init__(
+        # self, name: list[str], decoder: types.FunctionType, encoder: types.FunctionType
+        self,
+        name: List[str],
+        decoder: Callable,
+        encoder: Callable,
+    ):
+        self._name = name
+        self._decoder = decoder
+        self._encoder = encoder
+
+    def get_names(self):
+        return "|".join(self._name)
+
+
+class XLate:
+    _inputs: List[XLFormats]
+    _outputs: List[XLFormats]
+    _hashes: XLFormats
+    _default: XLFormats
+
+    def __init__(self):
+        self._default = XLFormats(
+            [DEFAULT_NAME], DEFAULT_DEC_FUNCTION, DEFAULT_ENC_FUNCTION
+        )
+        self._inputs = [
+            XLFormats(["base64", "b64"], encdec.b64_decode, encdec.b64_encode),
+            XLFormats(["hex"], encdec.hex_decode, encdec.hex_encode),
+            XLFormats(["antislash-hex"], encdec.ashex_decode, encdec.ashex_encode),
+            XLFormats(["dec"], encdec.dec_decode, encdec.dec_encode),
+            XLFormats(["bin"], encdec.bin_decode, encdec.bin_encode),
+            XLFormats(["bin7"], encdec.bin7_decode, None),
+        ]
+        self._hashes = [
+            XLFormats(["md5"], None, encdec.md5),
+            XLFormats(["sha1"], None, encdec.sha1),
+            XLFormats(["sha224"], None, encdec.sha224),
+            XLFormats(["sha256"], None, encdec.sha256),
+            XLFormats(["sha384"], None, encdec.sha384),
+            XLFormats(["sha512"], None, encdec.sha512),
+            XLFormats(["revhex64"], None, encdec.revhex64),
+            XLFormats(["revhex"], None, encdec.revhex),
+        ]
+        self._outputs = self._inputs + self._outputs
+
+
+# # INPUT AND OUTPUT FORMATS
+# INPUT_FORMATS = [
+#     ([DEFAULT_NAME], DEFAULT_DEC_FUNCTION, DEFAULT_ENC_FUNCTION),
+#     (["base64", "b64"], encdec.b64_decode, encdec.b64_encode),
+#     (["hex"], encdec.hex_decode, encdec.hex_encode),
+#     (["antislash-hex"], encdec.ashex_decode, encdec.ashex_encode),
+#     (["dec"], encdec.dec_decode, encdec.dec_encode),
+#     (["bin"], encdec.bin_decode, encdec.bin_encode),
+#     (["bin7"], encdec.bin7_decode, None),
+# ]
+
+
+# ONE_WAY_FUNCS = [
+#     (["md5"], None, encdec.md5),
+#     (["sha1"], None, encdec.sha1),
+#     (["sha224"], None, encdec.sha224),
+#     (["sha256"], None, encdec.sha256),
+#     (["sha384"], None, encdec.sha384),
+#     (["sha512"], None, encdec.sha512),
+#     (["revhex64"], None, encdec.revhex64),
+#     (["revhex"], None, encdec.revhex),
+# ]
+
+# OUTPUT_FORMATS = INPUT_FORMATS + ONE_WAY_FUNCS
 
 if __name__ == "__main__":
 
+    xlate = XLate()
     p = argparse.ArgumentParser(description="Encoding converter")
 
     p.add_argument(
@@ -88,13 +146,13 @@ if __name__ == "__main__":
 
     if args.list:
         print("Input formats:")
-        for input_format in INPUT_FORMATS:
-            print("\t" + "/".join(input_format[0]))
+        for __output in xlate._inputs:
+            print(f"\t{__output.get_names()}")
         print("")
 
         print("Output formats:")
-        for output_format in OUTPUT_FORMATS:
-            print("\t" + "/".join(output_format[0]))
+        for __output in xlate._outputs:
+            print(f"\t{__output.get_names()}")
         print()
 
     else:
@@ -102,28 +160,32 @@ if __name__ == "__main__":
         OPT_NO_OUTPUT_SPACE = args.ospace
 
         try:
-            inputFormat = None
-            outputFormat = None
+            input = None
+            output = None
 
-            for input_format in INPUT_FORMATS:
-                if args.iformat in input_format[0]:
-                    inputFormat = input_format
+            for __output in xlate._inputs:
+                if args.iformat in __output.get_names():
+                    input = __output
                     break
 
-            if inputFormat is None:
+            if input is None:
                 raise FormatException("Format %s not found" % args.iformat)
 
-            for output_format in OUTPUT_FORMATS:
-                if args.oformat in output_format[0]:
-                    outputFormat = output_format
+            # for output_format in OUTPUT_FORMATS:
+            #     if args.oformat in output_format[0]:
+            #         outputFormat = output_format
+            #         break
+            for __output in xlate._outputs:
+                if args.oformat in __output.get_names():
+                    input = __output
                     break
 
-            if outputFormat is None:
+            if output is None:
                 raise FormatException("Format %s not found" % args.oformat)
 
-            ecData = sys.stdin.read()
-            dcData = inputFormat[1](ecData)
-            recData = outputFormat[2](dcData)
+            input_data = sys.stdin.read()
+            decoded_data = input[1](input_data)
+            recData = output[2](decoded_data)
 
             sys.stdout.write(recData)
             sys.stdout.flush()
