@@ -1,57 +1,47 @@
 import argparse
 import sys
-from typing import Callable, List
+from typing import Callable, List, Optional
 
 from . import (
     DEFAULT_DEC_FUNCTION,
     DEFAULT_ENC_FUNCTION,
     DEFAULT_NAME,
     OPT_NO_INPUT_NAME,
-    OPT_NO_INPUT_SPACE,
     OPT_NO_OUTPUT_NAME,
-    OPT_NO_OUTPUT_SPACE,
     DecodeException,
     EncodeException,
     FormatException,
     encdec,
 )
 
-# import types
-
 
 class XLFormats:
-    # name: str
-    # alias: list[str]
     _name: List[str]
-    _decoder: Callable
-    _encoder: Callable
+    _decoder: Optional[Callable[[str], str]]
+    _encoder: Optional[Callable[[str], str]]
 
     def __init__(
-        # self, name: list[str], decoder: types.FunctionType, encoder: types.FunctionType
         self,
         name: List[str],
-        decoder: Callable,
-        encoder: Callable,
-    ):
+        decoder: Optional[Callable],
+        encoder: Optional[Callable],
+    ) -> None:
         self._name = name
         self._decoder = decoder
         self._encoder = encoder
 
-    def get_names(self):
+    def get_names(self) -> str:
         return "|".join(self._name)
 
 
 class XLate:
     _inputs: List[XLFormats]
     _outputs: List[XLFormats]
-    _hashes: XLFormats
-    _default: XLFormats
+    _hashes: List[XLFormats]
 
-    def __init__(self):
-        self._default = XLFormats(
-            [DEFAULT_NAME], DEFAULT_DEC_FUNCTION, DEFAULT_ENC_FUNCTION
-        )
+    def __init__(self) -> None:
         self._inputs = [
+            XLFormats([DEFAULT_NAME], DEFAULT_DEC_FUNCTION, DEFAULT_ENC_FUNCTION),
             XLFormats(["base64", "b64"], encdec.b64_decode, encdec.b64_encode),
             XLFormats(["hex"], encdec.hex_decode, encdec.hex_encode),
             XLFormats(["antislash-hex"], encdec.ashex_decode, encdec.ashex_encode),
@@ -69,37 +59,10 @@ class XLate:
             XLFormats(["revhex64"], None, encdec.revhex64),
             XLFormats(["revhex"], None, encdec.revhex),
         ]
-        self._outputs = self._inputs + self._outputs
+        self._outputs = self._inputs + self._hashes
 
 
-# # INPUT AND OUTPUT FORMATS
-# INPUT_FORMATS = [
-#     ([DEFAULT_NAME], DEFAULT_DEC_FUNCTION, DEFAULT_ENC_FUNCTION),
-#     (["base64", "b64"], encdec.b64_decode, encdec.b64_encode),
-#     (["hex"], encdec.hex_decode, encdec.hex_encode),
-#     (["antislash-hex"], encdec.ashex_decode, encdec.ashex_encode),
-#     (["dec"], encdec.dec_decode, encdec.dec_encode),
-#     (["bin"], encdec.bin_decode, encdec.bin_encode),
-#     (["bin7"], encdec.bin7_decode, None),
-# ]
-
-
-# ONE_WAY_FUNCS = [
-#     (["md5"], None, encdec.md5),
-#     (["sha1"], None, encdec.sha1),
-#     (["sha224"], None, encdec.sha224),
-#     (["sha256"], None, encdec.sha256),
-#     (["sha384"], None, encdec.sha384),
-#     (["sha512"], None, encdec.sha512),
-#     (["revhex64"], None, encdec.revhex64),
-#     (["revhex"], None, encdec.revhex),
-# ]
-
-# OUTPUT_FORMATS = INPUT_FORMATS + ONE_WAY_FUNCS
-
-if __name__ == "__main__":
-
-    xlate = XLate()
+def args_manager():
     p = argparse.ArgumentParser(description="Encoding converter")
 
     p.add_argument(
@@ -120,10 +83,10 @@ if __name__ == "__main__":
     )
 
     p.add_argument(
-        "--list",
-        "-l",
+        "--formats",
+        "-f",
         action="store_true",
-        dest="list",
+        dest="Formats",
         help="Lists input & output formats",
     )
 
@@ -143,15 +106,22 @@ if __name__ == "__main__":
     )
 
     args = p.parse_args()
+    return args
 
-    if args.list:
+
+if __name__ == "__main__":
+
+    _xlate = XLate()
+    args = args_manager()
+
+    if args.formats:
         print("Input formats:")
-        for __output in xlate._inputs:
+        for __output in _xlate._inputs:
             print(f"\t{__output.get_names()}")
         print("")
 
         print("Output formats:")
-        for __output in xlate._outputs:
+        for __output in _xlate._outputs:
             print(f"\t{__output.get_names()}")
         print()
 
@@ -163,46 +133,48 @@ if __name__ == "__main__":
             input = None
             output = None
 
-            for __output in xlate._inputs:
-                if args.iformat in __output.get_names():
-                    input = __output
+            for __input in _xlate._inputs:
+                if args.iformat in __input.get_names():
+                    input = __input
                     break
 
             if input is None:
                 raise FormatException("Format %s not found" % args.iformat)
 
-            # for output_format in OUTPUT_FORMATS:
-            #     if args.oformat in output_format[0]:
-            #         outputFormat = output_format
-            #         break
-            for __output in xlate._outputs:
+            for __output in _xlate._outputs:
                 if args.oformat in __output.get_names():
-                    input = __output
+                    output = __output
                     break
 
             if output is None:
                 raise FormatException("Format %s not found" % args.oformat)
 
+            if input._decoder is None:
+                raise Exception("Decoder shouldnt be None, but it is")
+            if output._encoder is None:
+                raise Exception("Encoder shouldnt be None, but it is")
+
             input_data = sys.stdin.read()
-            decoded_data = input[1](input_data)
-            recData = output[2](decoded_data)
+            input_data_as_str = input._decoder(input_data)
+            encoded_input_data = output._encoder(input_data_as_str)
 
-            sys.stdout.write(recData)
+            sys.stdout.write(encoded_input_data)
             sys.stdout.flush()
-
-        except FormatException as e:
-            sys.stderr.write(
-                "[X] Error encountered while searching format: %s" % str(e)
-            )
-            sys.stderr.flush()
-            sys.exit(1)
-
-        except DecodeException as e:
-            sys.stderr.write("[X] Error encountered during decoding : %s" % str(e))
-            sys.stderr.flush()
-            sys.exit(1)
-
-        except EncodeException as e:
-            sys.stderr.write("[X] Error encountered during decoding : %s" % str(e))
+        except Exception as e:
+            match e:
+                case FormatException():
+                    sys.stderr.write(
+                        f"[X] Error encountered while searching format: {str(e)}\n"
+                    )
+                case DecodeException():
+                    sys.stderr.write(
+                        f"[X] Error encountered during decoding: {str(e)}\n"
+                    )
+                case EncodeException():
+                    sys.stderr.write(
+                        f"[X] Error encountered during encoding: {str(e)}\n"
+                    )
+                case _:
+                    sys.stderr.write(f"[X] Unexpected error: {e}\n")
             sys.stderr.flush()
             sys.exit(1)
