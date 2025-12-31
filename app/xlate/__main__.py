@@ -86,7 +86,7 @@ def args_manager():
         "--formats",
         "-f",
         action="store_true",
-        dest="Formats",
+        dest="formats",
         help="Lists input & output formats",
     )
 
